@@ -1,4 +1,4 @@
-## go advanced bootcamp week 8 homework
+## Go advanced bootcamp week 8 homework
 
 ## Problems
 
@@ -10,15 +10,15 @@
 
 1. Installation and configuration of Redis - [Click for details](. /redis_install.md)
 
-2. Monitor using Grafana + prometheus + redis_exporter - [Click for details](. /monitor.md)
+2. Monitor using Grafana + Prometheus + redis_exporter - [Click for details](. /monitor.md)
 
 ## benchmark solution
 
-1. using centos 7.9 - 2 cores 4GB virtual machine for testing
+1. using Centos 7.9 - 2 cores 4GB virtual machine for testing
 
-2. test for jemalloc and libc memory allocation respectively.
+2. test for Jemalloc and Libc memory allocation respectively.
 
-3. use redis' own benchmark tool for testing
+3. use Redis' own benchmark tool for testing
 
 4. test 10 20 50 100 200 1k 5k bytes value size, each 50w times, key randomly generated 50w times
 
