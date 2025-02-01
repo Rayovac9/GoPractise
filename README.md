@@ -1,4 +1,4 @@
-# Go Advanced Training Camp Graduation Project
+# Go Advanced Training Camp Project
 
 ## Graduation Project Requirements
 
