@@ -1,88 +1,88 @@
-# go 进阶训练营 第四周 作业
+## Go Advanced Bootcamp Week 4 Assignment
 
-## 问题
+## Question
 
- 按照自己的构想，写一个项目满足基本的目录结构和工程，代码需要包含对数据层、业务层、API 注册，以及 main 函数对于服务的注册和启动，信号处理，使用 Wire 构建依赖。可以使用自己熟悉的框架。
+ Write a project that meets the basic directory structure and project as per your own conception. The code should include registration of data layer, business layer, API registration, registration and startup of services by the main function, signal processing, and dependency building using Wire. You can use your own familiar framework.
 
-## 思路
+## Ideas
 
-1. 设定业务场景为 - 航空机票价格服务（FareService），提供下面5个接口
+1. Set the business scenario as - Airline ticket price service (FareService), provide the following five interfaces
 
-    - CreateFare 机票价格规则新增
-        - 起始机场、目地机场、开始旅行日期、结束旅行日期、乘客类别（成人、儿童和婴儿）、票价
+    - CreateFare Airline Ticket Pricing Rules Add
+        - StartAirport, DestinationAirport, StartTravelDate, EndTravelDate, PassengerCategory (Adult, Child, Infant), Fare
 
-    - UpdateFare 机票价格规则更新
+    - UpdateFare Airfare rule update
 
-    - DeleteFare 机票价格规则删除
+    - DeleteFare airfare rule deletion
 
-    - GetFare 机票价格规则按ID获取
+    - GetFare Airfare Rule by ID
 
-    - Pricing 机票价格计算
+    - Pricing Airfare calculation
 
-        - 根据起始机场、目地机场、乘机日期、乘客类别（成人、儿童和婴儿）、条件计算适用票价。
+        - Calculate the applicable fare based on the origin airport, destination airport, date of travel, passenger category (adult, child, and infant), and conditions.
 
-2. 使用Protobuf定义接口协议
+2. define the interface protocol using Protobuf
 
-3. 采用Kratos生成HTTP和grpc使用框架
+3. generate HTTP and grpc using framework using Kratos
 
-4. 使用ent生成实体框架，处理DB操作
+4. using ent to generate entity framework to handle DB operations
 
-5. 使用wrie生成注入代码
+5. using wrie to generate injection code
 
 ## TODO
 
-1. [X] 工程化目录
+1. [X] Engineering Catalogue
 
-2. [X] 服务API设计
+2. [X] Service API Design
 
-3. [X] 表结构设计
+3. [X] Table Structure Design
 
-4. [x] kratos使用
+4. [X] kratos usage
 
-5. [x] ent使用
+5. [X] ent usage
 
-6. [x] wrie使用
+6. [x] wrie usage
 
-7. [x] 测试
+7. [x] Testing
 
-## 参考
+## Reference
 
-- [Go-gRPC 实践指南](https://www.bookstack.cn/read/go-grpc/summary.md)
+- [Go-gRPC Practice Guide](https://www.bookstack.cn/read/go-grpc/summary.md)
 - [Protocol Buffers](https://github.com/protocolbuffers/protobuf/releases)
-- [kratos blog示例](https://github.com/go-kratos/kratos/blob/main/examples/blog)
-- [ent文档](https://entgo.io/zh/docs/getting-started)
+- [kratos blog example](https://github.com/go-kratos/kratos/blob/main/examples/blog)
+- [ent documentation](https://entgo.io/zh/docs/getting-started)
 
-## 编译
+## Compile
 
-### kratos生成接口
+### kratos generates interfaces
 
-```sh
+``sh
 cd api\fare\v1
-kratos proto client fare.proto --proto_path=../../../third_party -I=.
+kratos proto client fare.proto --proto_path=... /... /... /third_party -I=.
 ```
 
 ### ent
 
-1. 生成结构 Fare 于 `<project>/ent/schema/` 目录内 `ent init Fare`
+1. generate structure Fare in `<project>/ent/schema/` directory `ent init Fare`
 
-2. 生成对DB的各种操作`ent generate ./ent/schema`
+2. generate various operations on the DB `ent generate . /ent/schema`.
 
-### 项目编译
+### Project compilation
 
-```sh
+``sh
 cd cmd\fare
-#生成注入代码
+## Generate injection code
 wrie
 go build github.com/webmin7761/go-school/homework/engineering/cmd/fare
 ```
 
-## 测试
+## Test
 
-- [Postman测试用例](test/data/_postman_engineering.json)
+- [Postman test case](test/data/_postman_engineering.json)
 
-## protobuf备忘
+## protobuf memo
 
-```sh
+``sh
 go get -u github.com/golang/protobuf
 
 go get -u github.com/golang/protobuf/protoc-gen-go
@@ -92,4 +92,6 @@ go get -u github.com/lazada/protoc-gen-go-http
 go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-http_out=. --proto_path=d:/protobuf -I=. price.proto
-```
+``
+
+Translated with DeepL.com (free version)
