@@ -32,9 +32,6 @@ For the current project, perform a microservice transformation, taking into acco
 - For ticket price inquiries, first query the cache. If not found, query the database, and then send a message to MQ to build a cache task.
 - Ticket price cache update job: consume the build task from MQ and fetch information from the DB to put into Redis.
 
-### Architecture Design
-
-![Architecture](doc/img/architecture.png)
 
 ## TODO
 
