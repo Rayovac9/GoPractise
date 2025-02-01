@@ -42,7 +42,3 @@ For the current project, perform a microservice transformation, taking into acco
 5. [X] Calendar and travel recommendation implementation
 6. [X] Cache update job
 7. [X] Testing
-
-## References
-
-- [Go-gRPC Practical Guide](https://www.bookstack.cn/read/go
