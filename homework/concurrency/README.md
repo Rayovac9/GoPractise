@@ -1,32 +1,32 @@
-# go 进阶训练营 第三周 作业
+# Go Advanced Training Camp Week 3 Homework
 
-## 问题
+## Problem
 
- 基于 errgroup 实现一个 http server 的启动和关闭 ，以及 linux signal 信号的注册和处理，要保证能够一个退出，全部注销退出。
+Implement an HTTP server startup and shutdown based on `errgroup`, along with the registration and handling of Linux signal signals. Ensure that when one service exits, all services exit as well.
 
-## 思路
+## Approach
 
-1. 优雅关闭
+1. Graceful shutdown
 
-2. 何时以及怎么关闭http server
+2. When and how to shut down the HTTP server
 
 ## TODO
 
-1. [x] 重构代码
+1. [x] Refactor code
 
-2. [x] 增加单元测试
+2. [x] Add unit tests
 
-## 参考
+## References
 
 `https://github.com/da440dil/go-workgroup/blob/master/template/signal/signal.go`
 
 `https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-sync-primitives/#errgroup`
 
-## 编译
+## Build
 
 `go run github.com/webmin7761/go-school/homework/concurrency`
 
-## 使用
+## Usage
 
 - <http://localhost:8080/>
 - <http://127.0.0.1:6060/debug/pprof/>
