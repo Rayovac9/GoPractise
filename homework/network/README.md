@@ -1,116 +1,116 @@
-# go 进阶训练营 第九周 作业
+## Go Advanced Bootcamp Week 9 Assignment
 
-## 问题
+## Questions
 
-1. 总结几种 socket 粘包的解包方式: fix length/delimiter based/length field based frame decoder。尝试举例其应用;([解答](#总结socket粘包的解包方式))
+1. Summarise several ways to decode socket sticky packets: fix length/delimiter based/length field based frame decoder. try to give an example of its application; ([Answer](#Summarise ways to decode socket sticky packets))
 
-2. 实现一个从 socket connection 中解码出 goim 协议的解码器。([方案说明](#goim协议的解码器说明))
+2. implement a decoder that decodes the goim protocol from a socket connection. ([Programme Description](#Decoder description for the goim protocol))
 
-## 总结socket粘包的解包方式
+## Summarise the decoding of socket sticky packets
 
->>>tcp/udp是按字节流方式传输数据，所以协议本身没有frame概念，需要自己在应用层定义frame以及编解码，又因为网络中的设备支持的每一个物理包的最大大小有所不同，所以被传输数据在传输过程中会被切小或合并，在到达接收端时应用层每次读取到的包不一定会与发出时包大小一一对应，其中有一些包可能还在途中。
+>>>tcp/udp is to transfer data by byte stream, so the protocol itself does not have the concept of frame, you need to define the frame in the application layer as well as codecs, and because the devices in the network support the maximum size of each physical packet is different, so the data being transferred will be cut or merged in the process of transferring, the packet read each time when it reaches the receiving end of the application layer may not correspond to the size of the packet when it was sent. The packets read by the application layer at the receiving end do not necessarily correspond to the packet size at the time of sending, and some of the packets may still be in transit.
 
 ### fix length
 
->>>定长型包，每个包固定大小，主要适用于单一类型的包
+>>>Fixed-length packets, each packet has a fixed size, mainly used for single type of packets.
 
-- 优点：打包和解包算法简单
+- Advantages: simple packing and unpacking algorithm
 
-- 缺点：
+- Disadvantages:
 
-    1. 包内容如果常常小于定长时，会有浪费;
-    2. 包长度要改动时不灵活，服务端和客户端需要同时调整;
+    1. packet contents are often wasted if they are smaller than the fixed length.
+    2. the length of the packet is not flexible and needs to be adjusted by the server and the client at the same time.
 
-- encode：通常采用左对齐右补0方式填满包
+- encode: usually use left-aligned and right-complemented 0 to fill the packet.
 
-- decode: 读取固定大小，一次没有读到足够大小内容，就继续读，直到累加到内容长度等于固定大小为一包
+- decode: read a fixed size, once did not read enough size of the content, continue to read until the cumulative length of the content is equal to the fixed size of a package
 
-- 图示
+- Figure
 
-![fixLength](./img/fixLength.png)
+! [fixLength](. /img/fixLength.png)
 
 ### delimiter based
 
->>>变长型包，每个包使用特殊符号做为结束符
+>>> Delimiter based packets, each packet is terminated with a special symbol.
 
-- 优点：基本可以按照实际大小进行传输
+- Advantages: basically transfers the actual size
 
-- 缺点：
+- Disadvantages:
 
-    1. 选用的特殊符号不能在Body中出现，否则会导致解包与封包不一至;
-    2. 传递二进制内容时容易出现原因1的问题;
+    1. the selected special symbol cannot appear in the Body, otherwise it will cause the unpacking and sealing to be different; 2. when transferring the binary content, it is not possible to use the special symbol as the terminator.
+    2. the problem of reason 1 may occur when transmitting binary content.
 
-- encode：要发送内容后加上包分隔符
+- encode: add the packet separator after the content to be sent.
 
-- decode: 一直读取到分隔符为一包
+- decode: keep reading until the separator is a packet.
 
-- 图示
+- Figure
 
-    1. `_$`为包分隔符
+    1. `_$` is the packet separator.
 
-![delimiterBased](./img/delimiterBased.png)
+! [delimiterBased](. /img/delimiterBased.png)
 
 ### length field based frame decoder
 
->>>变长型包，固定位+变长位，固定位：一般包含包标示符，包长度，变长的要传递内容
+>>> Variable-length packets, fixed bits + variable-length bits, fixed bits: usually contain packet identifier, packet length, variable-length content to be passed.
 
-- 优点：灵活，组包没有限制，适用于传递二进制包内容
+- Advantages: flexible, no limitation of packet grouping, suitable for passing binary packet content
 
-- 缺点：
+- Disadvantages:
 
-    1. 每个包都会有加上固定位，增多了要传递的内容;
+    1. fixed bits are added to each packet, increasing the amount of content to be passed.
 
-- encode：包标示符(1 Byte) + 传递内容的长度(2 Byte) + 传递内容
+- encode: packet identifier (1 Byte) + length of content to be passed (2 Bytes) + content to be passed
 
-- decode:
+- decode.
 
-    1. 先读取固定长度3byte = 包标示符(1 Byte) + 传递内容的长度(2 Byte);
-    2. 取byte[0]进行比较，是否为已知标识；
-    3. 取byte[1:3]转化为数字，得到传递内容长度;
-    4. 按传递内容长度读取内容，一次没有读到足够大小内容，就继续读，直到累加读到的内容长度等于传递内容长度
+    1. first read the fixed length 3byte = package identifier (1 Byte) + the length of the passed content (2 Byte); 2. take byte[1 Byte], and then read the byte[1 Byte].
+    2. Take byte[0] and compare it to see if it is a known identifier. 3;
+    3. take byte[1:3] and convert it to numbers to get the length of the delivered content.
+    4. read the content according to the length of the transfer content, one did not read a sufficient size of the content, continue to read until the cumulative length of the content read is equal to the length of the transfer content
 
-- 图示
+- Diagram
 
-    1. `0xCE`为包标示符,长度固定为1Byte
-    2. `0x000C`为包体长度,长度固定为2Byte
+    1. `0xCE` is the packet identifier, the length is fixed to 1Byte.
+    2. `0x000C` is the length of the packet body, the length is fixed to 2Byte.
 
-![lengthFieldBasedFrame](./img/lengthFieldBasedFrame.png)
+! [lengthFieldBasedFrame](. /img/lengthFieldBasedFrame.png)
 
-## goim协议的解码器说明
+## goim protocol decoder description
 
-### goim协议图示
+### The goim protocol diagram
 
-![goim](./img/GoIM.png)
+! [goim](. /img/GoIM.png)
 
->>> goim协议根据[goim协议代码](https://github.com/Terry-Mao/goim/blob/e742c99ad7/api/protocol/protocol.go)得到
+>>> The goim protocol is obtained according to [goim protocol code](https://github.com/Terry-Mao/goim/blob/e742c99ad7/api/protocol/protocol.go)
 
-### 代码说明
+### Code description
 
-1. `protocol.go`
-    - 协议定义，以及协议编解码
-    - 借助`io.ReadFull`读取指定大小的包（该方法会一直读取到指定大小才返回，除非遇到读取错误或EOF）
-    - 先读取Head大小的字节流，解出Head，再根据PackLen和HeadLen计算出Body大小，读取Body大小的字节
+1. `protocol.go`.
+    - Protocol definition, and protocol coding and decoding
+    - Read a packet of the specified size with the help of `io.ReadFull` (this method will always read to the specified size before returning, unless it encounters a read error or EOF)
+    - First read the byte stream of Head size, decode Head, then calculate the Body size according to PackLen and HeadLen, and read the bytes of the Body size.
 
 2. `server.go`
-    - 启动网络服务
-    - 把读取到的goim包，再写回给发送方
+    - Start the web service
+    - Write the read goim packet back to the sender.
 
-### 使用说明
+### Instructions for use
 
-```sh
+``sh
 go build
-network ":8686"
-```
+network ‘:8686’
+``
 
-### 测试
+### Testing
 
->>>使用goim的benchmark/client进行验证
+>>> Verify using goim's benchmark/client
 
 ```sh
 go build benchmarks/client
-client 1 1 ":8686"
+client 1 1 ‘:8686’
 ```
 
->>>下图为测试验证截图
+>>>The following screenshot shows the test validation
 
-![goim协议解码](./img/protocol.png)
+! [goim protocol decode](. /img/protocol.png)
