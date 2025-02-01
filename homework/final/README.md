@@ -1,117 +1,117 @@
-# go 进阶训练营 毕业项目
+## go advanced bootcamp graduation project
 
-## 毕设要求
+## Graduation Project Requirements
 
-对当下自己项目中的业务，进行一个微服务改造，需要考虑如下技术点：
+A microservice transformation of the business in your own project at the moment, you need to consider the following technical points:
 
-1）微服务架构（BFF、Service、Admin、Job、Task 分模块）
+1) Microservice architecture (BFF, Service, Admin, Job, Task in modules)
 
-2）API 设计（包括 API 定义、错误码规范、Error 的使用）
+(2) API design (including API definition, error code specification, the use of Error)
 
-3）gRPC 的使用
+(3) the use of gRPC
 
-4）Go 项目工程化（项目结构、DI、代码分层、ORM 框架）
+(4) Go project engineering (project structure, DI, code layering, ORM framework)
 
-5）并发的使用（errgroup 的并行链路请求
+(5) the use of concurrency (errgroup parallel link request)
 
-6）微服务中间件的使用（ELK、Opentracing、Prometheus、Kafka）
+(6) the use of microservice middleware (ELK, Opentracing, Prometheus, Kafka)
 
-7）缓存的使用优化（一致性处理、Pipeline 优化）
+7) Optimisation of the use of caching (consistency handling, Pipeline optimisation)
 
-## 思路
+## Ideas
 
-### 业务场景 - 航空机票询价服务（ShoppingService）
+### Business Scenario - Airline Ticket Inquiry Service (ShoppingService)
 
-- 机票询价接口返回下述三项信息，这三项信息分别由二个服务的三个不同的接口提供(Shopping)
+- The Airline Ticket Inquiry interface returns the following three pieces of information, which are provided by three different interfaces of the two services (Shopping)
 
-    - 查询票价返回指定航线和日期的票价（FareService.Pring）
-    - 返回指定航线前后一周的最低日历(FareService.PriceCalendar)
-    - 返回目的地的旅游推荐(Travel.Query)
+    - Fare Inquiry returns fares for a specified route and date (FareService.Pring)
+    - return to the specified route before and after the week of the lowest calendar (FareService. PriceCalendar)
+    - return destination travel recommendations (Travel.Query)
 
-- 机票询价接口属于BFF层，使用errgroup查询三个接口，三个接口查询均成功，然后聚合数据
-- 查询票价，先查询缓存，未命中，再查询DB，然后给MQ发一条构建缓存的任务
-- 票价缓存更新JOB，消费MQ中的构建任务，从DB中捞出信息打到Redis中
+- The air ticket inquiry interface belongs to the BFF layer, using errgroup to query the three interfaces, all three interface queries are successful, and then aggregate the data
+- Query fare, first query the cache, not hit, and then query the DB, and then send a task to MQ to build the cache
+- The fare cache updates the JOB, consumes the build task in the MQ, and fishes out the information from the DB to hit Redis
 
-### 架构设计
+### Architecture design
 
-![架构](doc/img/架构.png)
+! [architecture](doc/img/architecture.png)
 
 ## TODO
 
-1. [X] 票价、日历和旅游推荐接口设计
+1. [X] Fare, calendar and travel recommendation interface design
 
-2. [X] 询价服务API设计
+2. [X] Quote Service API Design
 
-3. [X] 表结构设计
+3. [X] Table Structure Design
 
-4. [X] 票价查询实现
+4. [X] Fare Query Implementation
 
-5. [X] 日历和旅游推荐实现
+5. [X] Calendar and Travel Recommendation Implementation
 
-6. [X] 缓存更新JOB
+6. [X] Cache Update Job
 
-7. [x] 测试
+7. [X] Testing
 
-## 参考
+## Reference
 
-- [Go-gRPC 实践指南](https://www.bookstack.cn/read/go-grpc/summary.md)
+- [Go-gRPC Practice Guide](https://www.bookstack.cn/read/go-grpc/summary.md)
 - [Protocol Buffers](https://github.com/protocolbuffers/protobuf/releases)
-- [kratos blog示例](https://github.com/go-kratos/kratos/blob/main/examples/blog)
-- [ent文档](https://entgo.io/zh/docs/getting-started)
+- [kratos blog example](https://github.com/go-kratos/kratos/blob/main/examples/blog)
+- [ent documentation](https://entgo.io/zh/docs/getting-started)
 
-## 编译
+## Compile
 
-### kratos生成接口
+### kratos generates interfaces
 
-```sh
+``sh
 cd api\fare\v1
-kratos proto client fare.proto --proto_path=../../../third_party --proto_path=../.. -I=.
+kratos proto client fare.proto --proto_path=... /... /... /third_party --proto_path=... /... --proto_path=. /. /. /third_party --proto_path=. /.
 ```
 
-### ent
+/.../...-I=.../...-I=.
 
-1. 生成结构 Fare 于 `<project>/ent/schema/` 目录内 `ent init Fare`
+1. generate structure Fare in `<project>/ent/schema/` directory `ent init Fare`
 
-2. 生成对DB的各种操作`ent generate ./ent/schema`
+2. generate various operations on the DB `ent generate . /ent/schema`
 
 ### conf
 
-```sh
-protoc --go_out=. --proto_path=../../third_party -I=. conf.proto
+``sh
+protoc --go_out=. --proto_path=... /... /third_party -I=. conf.proto
 ```
 
-### 项目编译
+### Project compilation
 
 ```sh
 cd cmd\fare
-#生成注入代码
+## Generate injection code
 wire
 go build github.com/webmin7761/go-school/homework/final/cmd/fare
 
 cd cmd\shop
-#生成注入代码
-wire
+# Generate injection code
+cd cmd\shop
 go build github.com/webmin7761/go-school/homework/final/cmd/shop
 
 cd cmd\travel
-#生成注入代码
-wire
+# Generate injection code
+cd cmd/travel
 go build github.com/webmin7761/go-school/homework/final/cmd/travel
 
 cd cmd\job
-wire
+cd cmd\job
 go build github.com/webmin7761/go-school/homework/final/cmd/job
+``
+
+### Run the project
+
+``##sh
+shop -conf ... /... /configs/shop/config.yaml 
+travel -conf ... /... /.../configs/travel/config.yaml
+fare -conf ... /... /.../configs/fare/config.yaml
+job -conf ... /... /configs/job/config.yaml
 ```
 
-### 运行项目
+## Test
 
-```sh
-shop -conf ../../configs/shop/config.yaml 
-travel -conf ../../configs/travel/config.yaml
-fare -conf ../../configs/fare/config.yaml
-job -conf ../../configs/job/config.yaml
-```
-
-## 测试
-
-- [Postman测试用例](test/data/go-school-final.postman_collection.json)
+- [Postman test case](test/data/go-school-final.postman_collection.json)
