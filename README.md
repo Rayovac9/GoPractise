@@ -1,5 +1,3 @@
-# Go Advanced Training Camp Project
-
 ## Graduation Project Requirements
 
 For the current project, perform a microservice transformation, taking into account the following technical points:
